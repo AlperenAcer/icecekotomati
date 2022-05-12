@@ -10,3 +10,5 @@ In final branch the project is complete with some minor bugs. It has the desired
 File path will be given as program argument exculuding file names.
 Header files are commented to describe functionality.
 Main file basically consists of file, menu and state select operations.
+
+Password for Bakım mode is 112358
