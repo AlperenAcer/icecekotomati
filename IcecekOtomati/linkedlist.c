@@ -6,9 +6,9 @@
 //
 
 #include "linkedlist.h"
-#include "stdlib.h"
-#include "stdio.h"
-
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 DoublyLinkedList* initializeList(void) {
     DoublyLinkedList* list_ptr = (DoublyLinkedList*)malloc(sizeof(DoublyLinkedList));
     list_ptr->size = 0;
@@ -48,6 +48,7 @@ void destroy_list(DoublyLinkedList* list_ptr) {
     Node* current_node = list_ptr->head;
     while (current_node != NULL) {
         list_ptr->head = current_node->next_node;
+        free(current_node->prd->name);
         free(current_node->prd);
         free(current_node);
         current_node = list_ptr->head;
@@ -72,6 +73,36 @@ void print_list(DoublyLinkedList* list_ptr) {
         current_node = current_node->next_node;
     }
 }
+void print_sold(DoublyLinkedList* list_ptr) {
+    Node* current_node = list_ptr->head;
+    int prints = 0;
+    while (current_node != NULL) {
+        int count = current_node->prd->sold;
+        if(count > 0){
+            prints++;
+            int price = current_node->prd->price * count;
+            printf("%s ürününden %d adet satılarak toplam ", current_node->prd->name, count);
+            if(price >= 100)
+                printf("%.2lf$", price/100.0);
+            else
+                printf("%dc", price);
+            printf(" alındı.\n");
+        }
+        current_node = current_node->next_node;
+    }
+    if(prints == 0)
+        printf("Satış bulunamadı!\n");
+}
+Product* create_product(char* name, int stock, float price) {
+    Product* new_prd = (Product*)malloc(sizeof(Product));
+    long name_len = strlen(name);
+    new_prd->name = (char*)malloc(name_len*sizeof(char));
+    strncpy(new_prd->name, name, name_len);
+    new_prd->stock = stock;
+    new_prd->price = price;
+    new_prd->sold = 0;
+    return new_prd;
+}
 
 int sell_product(DoublyLinkedList* list_ptr, char* line, cash_register* vallet){
     int id = atoi(line);
@@ -85,3 +116,4 @@ int sell_product(DoublyLinkedList* list_ptr, char* line, cash_register* vallet){
     prd->sold++;
     return 1;
 }
+
